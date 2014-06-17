@@ -2,8 +2,8 @@
 
 Copyright © 2014 Kurento. Licensed under [LGPL License].
 
-KWS Utils
-=============
+KWS Utils for Bower
+=========
 Utilities for Kurento Web SDK
 
 The KWS Utils project contains a set of reusable components that have been
@@ -15,187 +15,26 @@ The source code of this project can be cloned from the [GitHub repository].
 Installation instructions
 -------------------------
 
-Be sure to have installed the Node.js tools in your system.
-
-In ubuntu:
+Be sure to have installed [Bower] in your system:
 
 ```bash
-sudo apt-get install nodejs nodejs-legacy npm
+sudo npm install -g bower
 ```
 
-It's heavily encourage to use the latest Node.js and NPM versions from the
-[Node.js project PPA] instead of the packages available on the oficial Ubuntu
-repositories, since due to the fast-moving Node.js community and environment
-these last ones get easily outdated and can lead to incompatibility errors. In
-that case you must not install the ```npm``` package since the tool is included
-by default in the community driven ```nodejs``` Ubuntu package:
+To install the library, it's recomended to do that from the [Bower repository] :
 
 ```bash
-sudo apt-get install nodejs nodejs-legacy
-```
-
-To install the library, it's recomended to do that from the [NPM repository] :
-
-```bash
-npm install kws-media-api
+npm install kws-utils
 ```
 
 Alternatively, you can download the code using git and install manually its
 dependencies:
 
 ```bash
-git clone https://github.com/Kurento/kws-media-api.git
-cd kws-media-api
+git clone https://github.com/KurentoReleases/kws-utils.git
+cd kws-utils
 npm install
 ```
-
-Need to know, currently the library can't be able to talk directly with the
-Kureno Media Server, so it require to use a [Kurento Media Connector] instace.
-You can download the latest release from http://ci.kurento.com/apps/kmf-media-connector.zip.
-When you decompress it you'll find a README file with installation instructions.
-
-### Browser
-
-To build the browser version of the library you'll only need to exec the [grunt]
-task runner and they will be generated on the ```dist``` folder. Alternatively,
-if you don't have it globally installed, you can run a local copy by executing
-
-```bash
-node_modules/.bin/grunt
-```
-
-
-How to test
------------
-Tests are autonomous and based on [QUnit] testing framework. Their only
-requirement is to exec previously ```npm install``` to have installed all the
-dev dependencies.
-
-### Browser
-
-After building the web browser version of the library, just open the file
-```test/index.html``` with any browser, and the tests will launch automatically.
-In case of the browser raise some security policy errors, you can host the tests
-code by running any static web server at the source code root folder, for
-example by launching the command
-
-```bash
-python -m SimpleHTTPServer 8000
-```
-
-You can be able to configure to what WebSocket endpoint you want to connect on
-the dropdown list at the top of the tests page.
-
-### Node.js
-
-To exec test in Node.js, you only need to exec ```npm test```, that will launch
-all the tests automatically using [QUnit-cli].
-
-At this moment, the default WebSocket endpoint can not be changed due to limits
-of the current implementation of NPM. If you need to use a different WebSocket
-endpoint from the default one, you can exec the underlying test command and
-append a *ws_uri* parameter pointing the the alternative WebSocket endpoint:
-
-```bash
-node_modules/.bin/qunit-cli -c KwsMedia:. -c wock:node_modules/wock -c test/_common.js -c test/_proxy.js test/*.js --ws_uri=ws://localhost:8080
-```
-
-
-How to create a basic pipeline
-------------------------------
-
-For tutorial purposes, we are going to create a basic pipeline that play a video
-file from its URL and stream it over HTTP. You can also download and check this
-[example full source code] or run it directly from [JsFiddle] :
-
-1. Create an instance of the KwsMedia class that will manage the connection with
-   the Kurento Media Server, so you'll need to provide the URI of its WebSocket
-   endpoint. Alternatively, instead of using a constructor, you can also provide
-   success and error callbacks:
-
-   ```Javascript
-   var kwsMedia = kwsMediaApi.KwsMedia(ws_uri);
-   
-   kwsMedia.onconnect = function(kwsMedia)
-   {
-     …
-   };
-   kwsMedia.onerror = function(error)
-   {
-     …
-   };
-   ```
-
-   ```Javascript
-   kwsMediaApi.KwsMedia(ws_uri, function(kwsMedia)
-   {
-     …
-   },
-   function(error)
-   {
-     …
-   });
-   ```
-
-2. Create a pipeline. This will host and connect the diferent elements. In case
-   of error, it will be notified on the ```error``` parameter of the callback,
-   otherwise this will be null as it's common on Node.js style APIs:
-
-   ```Javascript
-   kwsMedia.createMediaPipeline(function(error, pipeline)
-   {
-     …
-   });
-   ```
-
-3. Create the elements. The player need an object with the URL of the video, and
-   and we'll also subscribe to the 'EndOfStream' event of the HTTP stream:
-
-   ```Javascript
-   PlayerEndpoint.create(pipeline,
-   {uri: "https://ci.kurento.com/video/small.webm"},
-   function(error, player)
-   {
-     …
-   });
-
-   HttpGetEndpoint.create(pipeline, function(error, httpGet)
-   {
-     httpGet.on('EndOfStream', function(event)
-     {
-       …
-     });
-
-     …
-   });
-   ```
-
-4. Connect the elements, so the media stream can flow between them:
-
-   ```Javascript
-   pipeline.connect(player, httpGet, function(error, pipeline)
-   {
-     …
-   });
-   ```
-
-5. Get the URL where the media stream will be available:
-
-   ```Javascript
-   httpGet.getUrl(function(error, url)
-   {
-     …
-   });
-   ```
-
-6. Start the reproduction of the media:
-
-   ```Javascript
-   player.play(function(error)
-   {
-     …
-   });
-   ```
 
 
 Kurento
@@ -230,17 +69,12 @@ News and Website
 Information about Kurento can be found on our [website].
 Follow us on Twitter @[kurentoms].
 
-[example full source code]: https://github.com/Kurento/kws-media-api/tree/develop/example/PlayerEndpoint-HttpGetEndpoint
+[Bower]: http://bower.io
+[Bower repository]: https://github.com/KurentoReleases/kws-media-api
 [GitHub Kurento group]: https://github.com/kurento
-[GitHub repository]: https://github.com/kurento/kws-media-api
-[grunt]: http://gruntjs.com/
-[JsFiddle]: http://jsfiddle.net/gh/get/library/pure/kurento/kws-media-api/contents/example/PlayerEndpoint-HttpGetEndpoint
+[GitHub repository]: https://github.com/kurento/kws-utils
 [Kurento Media Connector]: https://github.com/Kurento/kmf-media-connector
 [KurentoImage]: https://secure.gravatar.com/avatar/21a2a12c56b2a91c8918d5779f1778bf?s=120
 [kurentoms]: http://twitter.com/kurentoms
 [LGPL License]: http://www.gnu.org/licenses/lgpl-2.1.html
-[Node.js project PPA]: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os
-[NPM repository]: https://www.npmjs.org/package/kws-media-api
-[QUnit]: http://qunitjs.com
-[QUnit-cli]: https://github.com/devongovett/qunit-cli
 [website]: http://kurento.org

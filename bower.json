@@ -1,0 +1,22 @@
+{
+  "name": "kws-utils",
+  "description": "Kurento Utilities",
+  "license": "LGPL",
+  "keywords": [
+    "API",
+    "Kurento",
+    "KWS",
+    "SDK",
+    "web",
+    "WebRTC"
+  ],
+  "homepage": "http://www.kurento.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kurento/kws-utils.git"
+  },
+  "authors": [
+    "Kurento <info@kurento.org> (http://kurento.org)",
+    "Ivan Gracia <izanmail@gmail.com>"
+  ]
+}
