@@ -124,7 +124,7 @@ WebRtcPeer.start = function(mode, localVideo, remoteVideo, onSdp, onerror, video
 		getUserMedia(wp.userMediaConstraints, function(userStream) {
 			wp.stream = userStream;
 			wp.start();
-		}, wp.onerror, constraints);
+		}, wp.onerror);
 	} else {
 		wp.start();
 	}
