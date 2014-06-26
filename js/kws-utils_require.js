@@ -40,7 +40,7 @@ WebRtcPeer.prototype.start = function() {
 				OfferToReceiveVideo: (this.remoteVideo !== undefined)
 			}
 	};
-	
+
 	pc.createOffer(function(offer) {
 		console.log('Created SDP offer');
 		pc.setLocalDescription(offer, function() {
@@ -65,8 +65,8 @@ WebRtcPeer.prototype.start = function() {
 
 WebRtcPeer.prototype.dispose = function() {
 	console.log('Disposing WebRtcPeer');
-	//TODO don't know if we have to do this
-	if (this.stream) this.pc.removeStream(this.stream);
+	//FIXME This is not yet implemented in firefox
+	//if (this.stream) this.pc.removeStream(this.stream);
 	this.pc.close();
 };
 
@@ -75,8 +75,7 @@ WebRtcPeer.prototype.userMediaConstraints = {
 		video : {
 			mandatory: {
 				maxWidth: 640,
-				minWidth: 640,
-				maxFramRate : 15,
+				maxFrameRate : 15,
 				minFrameRate: 15
 			}
 		}
@@ -117,11 +116,14 @@ WebRtcPeer.prototype.options = {
 		} ]
 };
 
-WebRtcPeer.start = function(mode, localVideo, remoteVideo, onSdp, onerror, videoStream) {
+WebRtcPeer.start = function(mode, localVideo, remoteVideo, onSdp, onerror, mediaConstraints, videoStream) {
 	var wp = new WebRtcPeer(mode, localVideo, remoteVideo, onSdp, onerror, videoStream);
 
 	if (wp.mode !== 'recv' && !wp.stream) {
-		getUserMedia(wp.userMediaConstraints, function(userStream) {
+		var constraints = mediaConstraints ? 
+				mediaConstraints : wp.userMediaConstraints;
+
+		getUserMedia(constraints, function(userStream) {
 			wp.stream = userStream;
 			wp.start();
 		}, wp.onerror);
@@ -132,16 +134,16 @@ WebRtcPeer.start = function(mode, localVideo, remoteVideo, onSdp, onerror, video
 	return wp;
 };
 
-WebRtcPeer.startRecvOnly = function (remoteVideo, onSdp, onError) {
-	return WebRtcPeer.start('recv', null, remoteVideo, onSdp, onError);
+WebRtcPeer.startRecvOnly = function (remoteVideo, onSdp, onError, mediaConstraints) {
+	return WebRtcPeer.start('recv', null, remoteVideo, onSdp, onError, mediaConstraints);
 };
 
-WebRtcPeer.startSendOnly = function (localVideo, onSdp, onError) {
-	return WebRtcPeer.start('send', localVideo, null, onSdp, onError);
+WebRtcPeer.startSendOnly = function (localVideo, onSdp, onError, mediaConstraints) {
+	return WebRtcPeer.start('send', localVideo, null, onSdp, onError, mediaConstraints);
 };
 
-WebRtcPeer.startSendRecv = function (localVideo, remoteVideo, onSdp, onError) {
-	return WebRtcPeer.start('sendRecv', localVideo, remoteVideo, onSdp, onError);
+WebRtcPeer.startSendRecv = function (localVideo, remoteVideo, onSdp, onError, mediaConstraints) {
+	return WebRtcPeer.start('sendRecv', localVideo, remoteVideo, onSdp, onError, mediaConstraints);
 };
 
 module.exports = WebRtcPeer;
@@ -172,4 +174,4 @@ module.exports = WebRtcPeer;
 var WebRtcPeer = require('./WebRtcPeer');
 
 exports.WebRtcPeer = WebRtcPeer;
-},{"./WebRtcPeer":1}]},{},[2])
+},{"./WebRtcPeer":1}]},{},[2]);
